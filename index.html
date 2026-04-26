@@ -74,11 +74,18 @@
               </div>
 
               <article class="subpanel breakdown-panel">
-                <div class="panel-header-inline">
-                  <h3>LLM Score Breakdown</h3>
-                  <span class="mini-badge">100-point rubric</span>
-                </div>
-                <ul id="scoreBreakdown" class="breakdown-list"></ul>
+                <details class="accordion-card" open>
+                  <summary class="accordion-summary">
+                    <span class="accordion-title-group">
+                      <span class="accordion-title">LLM Score Breakdown</span>
+                      <span class="mini-badge">100-point rubric</span>
+                    </span>
+                    <span class="accordion-icon" aria-hidden="true"></span>
+                  </summary>
+                  <div class="accordion-body">
+                    <ul id="scoreBreakdown" class="breakdown-list"></ul>
+                  </div>
+                </details>
               </article>
             </section>
 
@@ -106,12 +113,32 @@
 
             <div class="comparison-grid">
               <article class="subpanel">
-                <h3>Original Content</h3>
-                <pre id="originalContent" class="content-block"></pre>
+                <details class="accordion-card">
+                  <summary class="accordion-summary">
+                    <span class="accordion-title-group">
+                      <span class="accordion-title">Original Content</span>
+                      <span class="accordion-caption">Full HTML</span>
+                    </span>
+                    <span class="accordion-icon" aria-hidden="true"></span>
+                  </summary>
+                  <div class="accordion-body">
+                    <pre id="originalContent" class="content-block"></pre>
+                  </div>
+                </details>
               </article>
               <article class="subpanel">
-                <h3>Optimized Content</h3>
-                <pre id="optimizedContent" class="content-block"></pre>
+                <details class="accordion-card">
+                  <summary class="accordion-summary">
+                    <span class="accordion-title-group">
+                      <span class="accordion-title">Optimized Content</span>
+                      <span class="accordion-caption">Full HTML</span>
+                    </span>
+                    <span class="accordion-icon" aria-hidden="true"></span>
+                  </summary>
+                  <div class="accordion-body">
+                    <pre id="optimizedContent" class="content-block"></pre>
+                  </div>
+                </details>
               </article>
             </div>
           </div>

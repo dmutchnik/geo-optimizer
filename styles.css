@@ -305,8 +305,8 @@ button:hover {
 }
 
 .breakdown-panel {
-  padding-top: 18px;
-  padding-bottom: 18px;
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 .panel-header-inline {
@@ -330,8 +330,98 @@ button:hover {
   text-transform: uppercase;
 }
 
+.accordion-card {
+  border: 1px solid rgba(70, 52, 26, 0.1);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 248, 239, 0.92)),
+    radial-gradient(circle at top right, rgba(28, 107, 82, 0.06), transparent 36%);
+  overflow: hidden;
+}
+
+.accordion-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+}
+
+.accordion-summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-title-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.accordion-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.accordion-caption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(28, 107, 82, 0.08);
+  color: var(--accent-strong);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.accordion-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(70, 52, 26, 0.08);
+  position: relative;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.accordion-icon::before,
+.accordion-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--text);
+  transform: translate(-50%, -50%);
+}
+
+.accordion-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  transition: transform 180ms ease;
+}
+
+.accordion-card[open] .accordion-icon {
+  background: rgba(28, 107, 82, 0.12);
+}
+
+.accordion-card[open] .accordion-icon::after {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.accordion-body {
+  padding: 0 18px 18px;
+}
+
 .breakdown-list {
-  margin: 14px 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
@@ -476,7 +566,7 @@ button:hover {
 }
 
 .content-block {
-  margin: 14px 0 0;
+  margin: 0;
   padding: 16px;
   min-height: 340px;
   overflow: auto;
@@ -531,6 +621,10 @@ button:hover {
 
   .panel-header-inline {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .accordion-summary {
     align-items: flex-start;
   }
 
