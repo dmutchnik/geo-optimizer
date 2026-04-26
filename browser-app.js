@@ -811,6 +811,90 @@
     return mode === "text" ? parseTextInput(rawContent) : parseHtmlInput(rawContent);
   }
 
+  function looksLikeHtml(rawContent) {
+    return /<\/?[a-z][\s\S]*>/i.test(String(rawContent || ""));
+  }
+
+  function splitPlainTextParagraphs(rawText) {
+    const normalized = String(rawText || "").replace(/\r\n/g, "\n").trim();
+    if (!normalized) {
+      return [];
+    }
+
+    const chunks = normalized
+      .split(/\n\s*\n+/)
+      .map(function (chunk) {
+        return normalizeWhitespace(chunk);
+      })
+      .filter(Boolean);
+
+    if (chunks.length > 1) {
+      return chunks;
+    }
+
+    return normalized
+      .split(/\n+/)
+      .map(function (line) {
+        return normalizeWhitespace(line);
+      })
+      .filter(Boolean);
+  }
+
+  function buildHtmlFromPlainText(rawText) {
+    const paragraphs = splitPlainTextParagraphs(rawText);
+    const combinedText = paragraphs.join(" ");
+    const parsedText = parseTextInput(combinedText);
+    const title = normalizeWhitespace(parsedText.title) || "Untitled Page";
+    const metaDescription = normalizeWhitespace(parsedText.metaDescription);
+    const bodyHtml = paragraphs
+      .map(function (paragraph) {
+        return "<p>" + escapeHtml(paragraph) + "</p>";
+      })
+      .join("");
+
+    return [
+      "<!DOCTYPE html>",
+      '<html lang="en">',
+      "<head>",
+      '<meta charset="UTF-8">',
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      "<title>" + escapeHtml(title) + "</title>",
+      metaDescription
+        ? '<meta name="description" content="' + escapeHtml(metaDescription) + '">'
+        : "",
+      "</head>",
+      "<body>",
+      "<main>",
+      "<h1>" + escapeHtml(title) + "</h1>",
+      bodyHtml,
+      "</main>",
+      "</body>",
+      "</html>"
+    ]
+      .filter(Boolean)
+      .join("");
+  }
+
+  function normalizeInputForOptimization(rawContent) {
+    const content = String(rawContent || "");
+    if (looksLikeHtml(content)) {
+      return {
+        mode: "html",
+        sourceType: "html",
+        inputHtml: content,
+        statusMessage: "Requesting a structure-preserving GEO rewrite from DeepSeek..."
+      };
+    }
+
+    return {
+      mode: "html",
+      sourceType: "plain-text",
+      inputHtml: buildHtmlFromPlainText(content),
+      statusMessage:
+        "Plain text input detected. Wrapping it into simple HTML paragraphs so DeepSeek can rewrite the copy."
+    };
+  }
+
   function extractHtmlEditableContent(rawHtml) {
     if (typeof DOMParser === "undefined") {
       return {};
@@ -1111,9 +1195,10 @@
       }
 
       const content = contentInput.value;
-      const mode = "html";
+      const normalizedInput = normalizeInputForOptimization(content);
+      const mode = normalizedInput.mode;
       const keyword = "";
-      const parsedPage = parseContent(content, mode);
+      const parsedPage = parseContent(normalizedInput.inputHtml, mode);
       const analysis = analyzePage(parsedPage, keyword);
 
       if (!normalizeWhitespace(content)) {
@@ -1123,19 +1208,19 @@
 
       analyzeButton.disabled = true;
       analyzeButton.textContent = "Optimizing...";
-      setStatus("Requesting a structure-preserving GEO rewrite from DeepSeek...");
+      setStatus(normalizedInput.statusMessage);
 
       try {
-        const editableContent = mode === "html" ? extractHtmlEditableContent(content) : null;
+        const editableContent = mode === "html" ? extractHtmlEditableContent(normalizedInput.inputHtml) : null;
         const llmResult = await requestLlmOptimization({
           mode: mode,
           page: parsedPage,
           editableContent: editableContent,
-          rawContent: content
+          rawContent: normalizedInput.inputHtml
         });
         const resolvedKeyword = llmResult.resolvedKeyword || analysis.topTerms[0] || "";
         const optimizedHtml =
-          mode === "html" ? applyLlmEditsToHtml(content, llmResult.htmlEdits || {}) : "";
+          mode === "html" ? applyLlmEditsToHtml(normalizedInput.inputHtml, llmResult.htmlEdits || {}) : "";
         const optimizedPage =
           mode === "html"
             ? parseHtmlInput(optimizedHtml)
@@ -1172,7 +1257,7 @@
         );
         originalPreview.srcdoc =
           mode === "html"
-            ? sanitizeHtmlForPreview(content)
+            ? sanitizeHtmlForPreview(normalizedInput.inputHtml)
             : buildPreviewDocument(parsedPage);
         optimizedPreview.srcdoc =
           mode === "html" && optimizedHtml
@@ -1190,10 +1275,15 @@
             ? llmResult.recommendations
             : analysis.suggestions
         );
-        originalContent.textContent = mode === "html" ? content : formatPage(parsedPage);
+        originalContent.textContent =
+          mode === "html" ? normalizedInput.inputHtml : formatPage(parsedPage);
         optimizedContent.textContent =
           mode === "html" && optimizedHtml ? optimizedHtml : formatPage(optimizedPage);
-        setStatus("DeepSeek optimization complete.");
+        setStatus(
+          normalizedInput.sourceType === "plain-text"
+            ? "DeepSeek optimization complete. Plain text input was converted into editable HTML first."
+            : "DeepSeek optimization complete."
+        );
       } catch (error) {
         console.error(error);
         setStatus(error.message || "DeepSeek optimization failed.", true);
