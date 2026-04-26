@@ -4,7 +4,7 @@
   "description": "Browser-based GEO optimization demo for a computational advertising project.",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "node scripts/dev-server.js",
     "test": "node --test"
   }
 }

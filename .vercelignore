@@ -1,7 +1,6 @@
 .env
-node_modules/
+.git
+.codex
 .DS_Store
-.codex/
-.vercel
 samples/We Do Estate Sales.html
 samples/download.pdf

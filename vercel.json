@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/optimize.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "browser-app.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "styles.css",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/api/optimize$",
+      "dest": "/api/optimize.js"
+    },
+    {
+      "src": "^/browser-app.js$",
+      "dest": "/browser-app.js"
+    },
+    {
+      "src": "^/styles.css$",
+      "dest": "/styles.css"
+    },
+    {
+      "src": "^/$",
+      "dest": "/index.html"
+    }
+  ]
+}

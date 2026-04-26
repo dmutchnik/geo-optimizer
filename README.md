@@ -23,9 +23,8 @@ This project is a browser-based demo for a Computational Advertising final proje
 
 - [index.html](/Users/drewmutchnik/Desktop/adv final project/index.html)
 - [styles.css](/Users/drewmutchnik/Desktop/adv final project/styles.css)
-- [app.js](/Users/drewmutchnik/Desktop/adv final project/app.js)
 - [browser-app.js](/Users/drewmutchnik/Desktop/adv final project/browser-app.js)
-- [server.js](/Users/drewmutchnik/Desktop/adv final project/server.js)
+- [scripts/dev-server.js](/Users/drewmutchnik/Desktop/adv final project/scripts/dev-server.js)
 - [lib/geo-engine.js](/Users/drewmutchnik/Desktop/adv final project/lib/geo-engine.js)
 - [lib/parsers.js](/Users/drewmutchnik/Desktop/adv final project/lib/parsers.js)
 - [docs/methodology-and-results.md](/Users/drewmutchnik/Desktop/adv final project/docs/methodology-and-results.md)
@@ -47,6 +46,20 @@ npm start
 ```
 
 3. Open [http://localhost:3000](http://localhost:3000)
+
+## Vercel Deployment
+
+This project is Vercel-compatible:
+
+- Static frontend files are served from the project root
+- DeepSeek proxy logic runs in [api/optimize.js](/Users/drewmutchnik/Desktop/adv final project/api/optimize.js)
+
+Set these environment variables in Vercel before using the optimizer:
+
+```bash
+DEEPSEEK_API_KEY=your_actual_key_here
+DEEPSEEK_MODEL=deepseek-chat
+```
 
 To run tests:
 
