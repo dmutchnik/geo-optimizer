@@ -1,0 +1,10 @@
+{
+  "name": "geo-optimized-web-parser",
+  "version": "1.0.0",
+  "description": "Browser-based GEO optimization demo for a computational advertising project.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}
